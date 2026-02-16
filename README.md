@@ -70,3 +70,24 @@ exit
 poweroff
 ```
 Unmount iso in Hetzner console
+
+10. Operate via Github (GitHub is your source of truth)
+on the server:
+```bash
+sudo mkdir -p /etc/nixos-repo
+sudo chown -R root:root /etc/nixos-repo
+sudo chmod 700 /etc/nixos-repo
+sudo git clone <your-repo-url> /etc/nixos-repo
+```
+Then symlink (optional but tidy):
+```bash
+sudo rm -rf /etc/nixos
+sudo ln -s /etc/nixos-repo/hosts/myhetzner /etc/nixos
+```
+
+Now updates are:
+```bash
+cd /etc/nixos-repo
+sudo git pull --ff-only
+sudo nixos-rebuild switch
+```
