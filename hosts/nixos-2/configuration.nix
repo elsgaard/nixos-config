@@ -33,6 +33,7 @@
     hostName = "nixos-2";
 
     firewall = {
+      enable = true;
       allowedTCPPorts = [ 22 ];
     };
   };
