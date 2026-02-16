@@ -91,3 +91,10 @@ cd /etc/nixos-repo
 sudo git pull --ff-only
 sudo nixos-rebuild switch
 ```
+
+# Channels
+```bash
+sudo nix-channel --add https://nixos.org/channels/nixos-25.11 nixos
+sudo nix-channel --update
+sudo nixos-rebuild switch --upgrade
+```
