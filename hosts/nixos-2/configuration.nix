@@ -4,6 +4,9 @@
   imports = [
     # Hardware scan results
     ./hardware-configuration.nix
+
+    # Service
+    ../../modules/services/hellojetty.nix
   ];
 
   ############################################################
@@ -33,7 +36,6 @@
     hostName = "nixos-2";
 
     firewall = {
-      enable = true;
       allowedTCPPorts = [ 22 ];
     };
   };
@@ -90,7 +92,6 @@
     vim
     wget
     git
-    jdk25
   ];
 
   ############################################################
