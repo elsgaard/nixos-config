@@ -45,6 +45,7 @@
      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
      jdk25
+     git
    ];
 
   # Enable the OpenSSH daemon.
