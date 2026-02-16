@@ -1,64 +1,100 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Hardware scan results
+    ./hardware-configuration.nix
+  ];
 
-  # Use the systemd-boot EFI boot loader.
+  ############################################################
+  # Boot
+  ############################################################
+
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot";
+  boot.loader.efi = {
+    canTouchEfiVariables = true;
+    efiSysMountPoint = "/boot";
+  };
+
+  ############################################################
+  # Memory / Swap
+  ############################################################
 
   zramSwap = {
     enable = true;
     memoryPercent = 25;
   };
 
-  networking.hostName = "nixos-2"; # Define your hostname.
+  ############################################################
+  # Networking
+  ############################################################
 
-  # Set your time zone.
+  networking = {
+    hostName = "nixos-2";
+
+    firewall = {
+      allowedTCPPorts = [ 22 ];
+    };
+  };
+
+  ############################################################
+  # Time & Locale
+  ############################################################
+
   time.timeZone = "Europe/Copenhagen";
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_TIME = "da_DK.UTF-8";
-    LC_MONETARY = "da_DK.UTF-8";
-    LC_MEASUREMENT = "da_DK.UTF-8";
+
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_TIME        = "da_DK.UTF-8";
+      LC_MONETARY    = "da_DK.UTF-8";
+      LC_MEASUREMENT = "da_DK.UTF-8";
+    };
   };
 
   console.keyMap = "dk";
   services.xserver.xkb.layout = "dk";
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-   users.users.admin = {
-     isNormalUser = true;
-     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-     initialHashedPassword = "";
-     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKeqZmlYFxsg1BqomySG+hRdJLcM3Q0YqGf13okIvzO4 eddsa-key-20260207" ];
-     packages = with pkgs; [
-       tree
-     ];
-   };
+  ############################################################
+  # Users
+  ############################################################
 
-  environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-     wget
-     jdk25
-     git
-   ];
+  users.users.admin = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
 
-  # Enable the OpenSSH daemon.
+    # Set with `passwd admin` after first login
+    initialHashedPassword = "";
+
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKeqZmlYFxsg1BqomySG+hRdJLcM3Q0YqGf13okIvzO4 eddsa-key-20260207"
+    ];
+
+    packages = with pkgs; [
+      tree
+    ];
+  };
+
+  ############################################################
+  # Services
+  ############################################################
+
   services.openssh.enable = true;
 
-  # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  ############################################################
+  # System Packages
+  ############################################################
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
+  environment.systemPackages = with pkgs; [
+    vim
+    wget
+    git
+    jdk25
+  ];
 
-  system.stateVersion = "25.05"; # Did you read the comment?
+  ############################################################
+  # System State (Do not change after install)
+  ############################################################
 
+  system.stateVersion = "25.05";
 }
